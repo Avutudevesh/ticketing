@@ -19,16 +19,16 @@ router.post('/api/users/signup', [
   async (req: Request, res: Response) => {
 
     const { email, password } = req.body;
-    const existingUser = User.findOne({ email });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       throw new BadRequestError('Email already in use');
     }
-    const user = User.build({ email: email, password: password });
+    const user = User.build({ email, password });
     await user.save();
     const userJwt = jwt.sign({
       id: user.id,
       email: user.email
-    }, process.env.JWT_ENV!);
+    }, process.env.JWT_KEY!);
     req.session = {
       jwt: userJwt
     }

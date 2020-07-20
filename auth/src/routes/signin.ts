@@ -19,23 +19,23 @@ router.post('/api/users/signin', [
 ],
   validateRequest,
   async (req: Request, res: Response) => {
-
     const { email, password } = req.body;
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
       throw new BadRequestError('Invalid email or password');
     }
-    if (!await Password.compare("existingUser", password)) {
-      throw new BadRequestError('Inavlid email or password');
+    if (!await Password.compare(existingUser.password, password)) {
+      throw new BadRequestError('Invalid email or password');
     }
     const userJwt = jwt.sign({
       id: existingUser.id,
       email: existingUser.email
-    }, process.env.JWT_ENV!);
+    }, process.env.JWT_KEY!);
     req.session = {
       jwt: userJwt
     }
     res.status(200).send(existingUser);
+
 
   });
 
