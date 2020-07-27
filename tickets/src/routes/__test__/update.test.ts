@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 import mongoose from 'mongoose';
+import { natsWrapper } from '../../nats-wrapper';
 
 it('returnes a 401 if not authenticated', async () => {
   const id = mongoose.Types.ObjectId().toHexString();
@@ -98,4 +99,29 @@ it('returns 400 if invalid title or price is supplied', async () => {
       price: -10
     })
     .expect(400);
-}); 
+});
+
+
+it('nats publish have been called on successful update', async () => {
+
+  const cookie = global.signin();
+  const response = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+      title: 'title',
+      price: 10
+    })
+    .expect(201);
+
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set('Cookie', cookie)
+    .send({
+      title: 'title 2',
+      price: 20
+    })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+});

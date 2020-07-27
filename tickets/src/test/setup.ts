@@ -28,8 +28,12 @@ global.signin = () => {
   return [`express:sess=${base64}`];
 }
 
+jest.mock('../nats-wrapper');
+
+
 let mongo: any;
 beforeAll(async () => {
+  jest.clearAllMocks();
   process.env.JWT_KEY = "qwerty";
   mongo = new MongoMemoryServer();
   const mongoUri = await mongo.getUri();

@@ -1,7 +1,9 @@
 import express, { Request, Response } from 'express';
 import { Ticket } from '../models/ticket';
-import { NotFoundError, requireAuth, validateRequest, BadRequestError, NotAuthorizedError } from '@daticketing/common';
+import { requireAuth, validateRequest, BadRequestError, NotAuthorizedError } from '@daticketing/common';
 import { body } from 'express-validator';
+import { natsWrapper } from '../nats-wrapper';
+import { TicketUpdatedPublisher } from '../events/publisher/ticket-updated-publisher';
 
 const router = express.Router();
 
@@ -33,6 +35,12 @@ router.put('/api/tickets/:id',
     });
 
     ticket.save();
+    new TicketUpdatedPublisher(natsWrapper.client).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId
+    });
     res.send(ticket);
   });
 export { router };
