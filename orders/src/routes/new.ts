@@ -3,6 +3,8 @@ import { requireAuth, validateRequest, BadRequestError, OrderStatus } from '@dat
 import { body } from 'express-validator';
 import { Ticket } from '../models/ticket';
 import { Order } from '../models/order';
+import { OrderCreatedPublisher } from '../events/publisher/order-created-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 const EXPIRATION_WINDOW_SECONDS = 30;
@@ -35,6 +37,16 @@ router.post('/api/orders',
       ticket
     });
     await order.save();
+    await new OrderCreatedPublisher(natsWrapper.client).publish({
+      id: order.userId,
+      userId: order.userId,
+      status: order.status,
+      expiresAt: order.expiresAt.toISOString(),
+      ticket: {
+        id: ticket.id,
+        price: ticket.price
+      }
+    });
     res.status(201).send(order);
   });
 
