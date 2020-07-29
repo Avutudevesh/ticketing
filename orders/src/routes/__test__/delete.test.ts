@@ -1,4 +1,5 @@
 import request from 'supertest';
+import mongoose from 'mongoose';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 import { natsWrapper } from '../../nats-wrapper';
@@ -6,7 +7,7 @@ import { OrderStatus } from '@daticketing/common';
 
 it('cancels the order', async () => {
   const ticket = Ticket.build({
-    id: '123',
+    id: mongoose.Types.ObjectId().toHexString(),
     title: 'concert',
     price: 20
   });
