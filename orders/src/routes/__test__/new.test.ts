@@ -18,6 +18,7 @@ it('returnes an error if ticket is not found', async () => {
 
 it('returnes an error if ticket is reserved', async () => {
   const ticket = Ticket.build({
+    id: '123',
     title: 'concert',
     price: 20
   });
@@ -42,6 +43,7 @@ it('returnes an error if ticket is reserved', async () => {
 
 it('reserves a ticket', async () => {
   const ticket = Ticket.build({
+    id: '123',
     title: 'concert',
     price: 20
   });
@@ -56,6 +58,7 @@ it('reserves a ticket', async () => {
 
 it('nats publisher is invoked', async () => {
   const ticket = Ticket.build({
+    id: '123',
     title: 'concert',
     price: 20
   });

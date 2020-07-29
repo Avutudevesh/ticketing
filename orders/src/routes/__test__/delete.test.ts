@@ -6,6 +6,7 @@ import { OrderStatus } from '@daticketing/common';
 
 it('cancels the order', async () => {
   const ticket = Ticket.build({
+    id: '123',
     title: 'concert',
     price: 20
   });
