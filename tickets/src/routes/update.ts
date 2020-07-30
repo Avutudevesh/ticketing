@@ -26,6 +26,9 @@ router.put('/api/tickets/:id',
     if (!ticket) {
       throw new BadRequestError('ticket not found');
     }
+    if (ticket.orderId) {
+      throw new BadRequestError('ticket is reserved');
+    }
     if (req.currentUser!.id !== ticket.userId) {
       throw new NotAuthorizedError();
     }
