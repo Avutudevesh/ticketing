@@ -5,13 +5,13 @@ import jwt from 'jsonwebtoken';
 declare global {
   namespace NodeJS {
     interface Global {
-      signin(): string[]
+      signin(userId?: string): string[]
     }
   }
 }
 
-global.signin = () => {
-  const id = mongoose.Types.ObjectId().toHexString();
+global.signin = (userId?: string) => {
+  const id = userId || mongoose.Types.ObjectId().toHexString();
   const payload = {
     id,
     email: 'test@test.com'
