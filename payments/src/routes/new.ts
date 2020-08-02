@@ -36,7 +36,6 @@ router.post(
     if (order.status === OrderStatus.CANCELLED) {
       throw new BadRequestError('Cannot pay for an cancelled order');
     }
-
     const response = await stripe.charges.create({
       currency: 'usd',
       amount: order.price * 100,

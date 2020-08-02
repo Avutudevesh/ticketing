@@ -20,7 +20,7 @@ const schema = new mongoose.Schema({
     required: true
   },
   stripeId: {
-    type: Number,
+    type: String,
     required: true
   }
 }, {
